@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 推荐作用域：LSPosed / Vector 启用模块时默认勾选这些应用 -->
+    <string-array name="xposed_scope">
+        <item>com.netease.uuremote</item>
+    </string-array>
+</resources>

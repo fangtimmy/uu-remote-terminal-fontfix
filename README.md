@@ -14,8 +14,8 @@
 
 ## 下载
 
-- 最新 APK：[`dist/uu-remote-terminal-fontfix-v1.1.0.apk`](dist/uu-remote-terminal-fontfix-v1.1.0.apk)
-- 打包下载（APK + 本说明）：[`dist/uu-remote-terminal-fontfix-v1.1.0.zip`](dist/uu-remote-terminal-fontfix-v1.1.0.zip)
+- 最新 APK：[`dist/uu-remote-terminal-fontfix-v1.1.1.apk`](dist/uu-remote-terminal-fontfix-v1.1.1.apk)
+- 打包下载（APK + 本说明）：[`dist/uu-remote-terminal-fontfix-v1.1.1.zip`](dist/uu-remote-terminal-fontfix-v1.1.1.zip)
 - 或见仓库 Releases 页
 
 ## 原来是什么字体
@@ -59,9 +59,9 @@ UU 终端用 `Typeface.Builder` / `Typeface.CustomFallbackBuilder` 加载**随�
 
 ## 安装
 
-1. 安装 APK：`adb install uu-remote-terminal-fontfix-v1.1.0.apk`（或在设备上直接点开安装）
+1. 安装 APK：`adb install uu-remote-terminal-fontfix-v1.1.1.apk`（或在设备上直接点开安装）
 2. 打开 LSPosed / Vector 管理器 → 模块 → **启用「UU Remote Terminal FontFix」**
-3. **作用域勾选**：`UU远程`（`com.netease.uuremote`）
+3. **作用域**：模块已内置推荐作用域（`com.netease.uuremote`），开启后一般已自动勾选；若没勾，手动勾上 `UU远程`
 4. **重启设备**（至少重启 UU 远程进程）
 
 ## 验证
