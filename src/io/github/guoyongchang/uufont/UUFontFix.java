@@ -21,22 +21,25 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
- * UU Terminal NerdFont —— 修复网易 UU 远程（com.netease.uuremote）内置终端
- * 的 Nerd Font 图标显示为方块的问题。
+ * UU Remote Terminal FontFix —— 把网易 UU 远程（com.netease.uuremote）内置
+ * 终端的字体直接替换为 Maple Mono NF CN。
  *
  * 原理：UU 终端用 Typeface.Builder / CustomFallbackBuilder 加载随包自带的
- * 字体（res/ak/a.ttf，无 Nerd 字形且不随系统字体变化）。本模块挂钩其字体
- * 加载路径，把返回值替换为随模块 APK 分发的 JetBrainsMono Nerd Font Mono
- * （assets/fonts/...，自包含，不依赖系统字体改动）。
+ * 字体（res/ak/a.ttf，Courier New Bold 派生，无 Nerd 字形、中文也靠系统回退）。
+ * 本模块挂钩其字体加载路径，把返回值直接换成随模块 APK 分发的字体
+ * （assets/fonts/MapleMono-NF-CN-Regular.ttf，自包含，不依赖系统字体改动）。
+ *
+ * Maple Mono NF CN 单文件即覆盖 拉丁 / 中文 / Nerd Font 图标，所以中英文字面
+ * 与终端里的图标都来自同一个 Typeface，不再需要中文回退字体。
  *
  * 加载优先级：① 模块内置字体 → ② /system/fonts/DroidSansMono.ttf（若用户
- * 已用 Magisk 字体模块覆盖为 Nerd 字体）→ ③ Typeface.create("monospace")。
+ * 已用 Magisk 字体模块覆盖过）→ ③ Typeface.create("monospace")。
  */
 public class UUFontFix implements IXposedHookLoadPackage {
 
     private static final String TARGET_PKG = "com.netease.uuremote";
     private static final String MODULE_PKG = "io.github.guoyongchang.uufont";
-    private static final String BUNDLED_FONT = "fonts/JetBrainsMonoNerdFontMono-Regular.ttf";
+    private static final String BUNDLED_FONT = "fonts/MapleMono-NF-CN-Regular.ttf";
     private static final String SYSTEM_FONT = "/system/fonts/DroidSansMono.ttf";
     private static final String TAG = "[UUFontFix] ";
 
@@ -92,10 +95,13 @@ public class UUFontFix implements IXposedHookLoadPackage {
                             }
                         }
                         if (data != null) {
-                            File dst = new File(app.getCacheDir(), "uuterm_nerd_mono.ttf");
-                            FileOutputStream out = new FileOutputStream(dst);
-                            out.write(data);
-                            out.close();
+                            File dst = new File(app.getCacheDir(), "uuterm_maple_mono_nf_cn.ttf");
+                            // 字体约 20MB，已缓存且大小一致就不重复解压写入
+                            if (!dst.exists() || dst.length() != data.length) {
+                                FileOutputStream out = new FileOutputStream(dst);
+                                out.write(data);
+                                out.close();
+                            }
                             sNerd = Typeface.createFromFile(dst);
                         }
                     } else {
@@ -122,7 +128,7 @@ public class UUFontFix implements IXposedHookLoadPackage {
                         XposedBridge.log(TAG + "monospace 兜底失败: " + t);
                     }
                 }
-                XposedBridge.log(TAG + "Nerd 字体就绪(" + sSource + "): " + (sNerd != null));
+                XposedBridge.log(TAG + "内置字体就绪(" + sSource + "): " + (sNerd != null));
             } finally {
                 IN_LOAD.remove();
             }
